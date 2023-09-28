@@ -51,9 +51,9 @@ func main() {
 		alpinistas = append(alpinistas, pessoa)
 	}
 
-	for _, d := range alpinistas {
-		fmt.Println(d.Nome)
-	}
+	// for _, d := range alpinistas {
+	// 	fmt.Println(d.Nome)
+	// }
 
 	mrt := pkg.NewMaroto(cfg)
 	m := pkg.NewMetricsDecorator(mrt)
@@ -67,19 +67,58 @@ func main() {
 		BorderColor: &props.Color{Red: 255, Green: 255, Blue: 255},
 	}
 
-	for _, alpinista := range alpinistas {
+	passo := 3
+
+	posicao := 0
+
+	tresAlpinistas := []Alpinista{}
+
+	for posicao < len(alpinistas)-1 {
+		for i := 0; i < passo && posicao < len(alpinistas); i++ {
+			tresAlpinistas = append(tresAlpinistas, alpinistas[posicao])
+			posicao++
+		}
+
+		fmt.Println(tresAlpinistas)
+
 		m.AddRow(12.7,
-			text.NewCol(4, alpinista.Nome, props.Text{Size: 18, Top: 5}).WithStyle(colStyle),
-			text.NewCol(4, alpinista.Nome, props.Text{Size: 18, Top: 5}).WithStyle(colStyle),
-			text.NewCol(4, alpinista.Nome, props.Text{Size: 18, Top: 5}).WithStyle(colStyle),
+			text.NewCol(4, tresAlpinistas[0].Nome, props.Text{Size: 18, Top: 5}).WithStyle(colStyle),
+			text.NewCol(4, tresAlpinistas[1].Nome, props.Text{Size: 18, Top: 5}).WithStyle(colStyle),
+			text.NewCol(4, tresAlpinistas[2].Nome, props.Text{Size: 18, Top: 5}).WithStyle(colStyle),
 		).WithStyle(rowStyle)
 
 		m.AddRow(12.7,
-			text.NewCol(4, alpinista.Cidade, props.Text{Size: 14}).WithStyle(colStyle),
-			text.NewCol(4, alpinista.Cidade, props.Text{Size: 14}).WithStyle(colStyle),
-			text.NewCol(4, alpinista.Cidade, props.Text{Size: 14}).WithStyle(colStyle),
+			text.NewCol(4, tresAlpinistas[0].Cidade, props.Text{Size: 14}).WithStyle(colStyle),
+			text.NewCol(4, tresAlpinistas[1].Cidade, props.Text{Size: 14}).WithStyle(colStyle),
+			text.NewCol(4, tresAlpinistas[2].Cidade, props.Text{Size: 14}).WithStyle(colStyle),
 		).WithStyle(rowStyle)
+
+		tresAlpinistas = []Alpinista{}
 	}
+
+	m.AddRow(12.7,
+		text.NewCol(4, alpinistas[1029].Nome, props.Text{Size: 18, Top: 5}).WithStyle(colStyle),
+	).WithStyle(rowStyle)
+
+	m.AddRow(12.7,
+		text.NewCol(4, alpinistas[1029].Cidade, props.Text{Size: 14}).WithStyle(colStyle),
+	).WithStyle(rowStyle)
+
+	// for _, alpinista := range alpinistas {
+	// m.AddRow(12.7,
+	// 	text.NewCol(4, tresAlpinistas[0].Nome, props.Text{Size: 18, Top: 5}).WithStyle(colStyle),
+	// 	text.NewCol(4, tresAlpinistas[1].Nome, props.Text{Size: 18, Top: 5}).WithStyle(colStyle),
+	// 	text.NewCol(4, tresAlpinistas[2].Nome, props.Text{Size: 18, Top: 5}).WithStyle(colStyle),
+	// ).WithStyle(rowStyle)
+
+	// 	m.AddRow(12.7,
+	// 		text.NewCol(4, alpinista.Cidade, props.Text{Size: 14}).WithStyle(colStyle),
+	// 		text.NewCol(4, alpinista.Cidade, props.Text{Size: 14}).WithStyle(colStyle),
+	// 		text.NewCol(4, alpinista.Cidade, props.Text{Size: 14}).WithStyle(colStyle),
+	// 	).WithStyle(rowStyle)
+
+	// 	// fmt.Println(alpinista.Nome)
+	// }
 
 	document, err := m.Generate()
 	if err != nil {
