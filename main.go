@@ -37,7 +37,7 @@ func main() {
 	cfg := builder.WithDefaultFont(&props.Font{Family: customFont}).
 		WithPageSize(pagesize.Nanay).
 		WithMargins(5, 13, 5).
-		WithDebug(true).
+		WithDebug(false).
 		WithDimensions(215.9, 287.1).
 		Build()
 
@@ -51,19 +51,16 @@ func main() {
 		alpinistas = append(alpinistas, pessoa)
 	}
 
-	// for _, d := range alpinistas {
-	// 	fmt.Println(d.Nome)
-	// }
-
 	mrt := pkg.NewMaroto(cfg)
 	m := pkg.NewMetricsDecorator(mrt)
 
 	colStyle := &props.Cell{
-		BorderType:  border.Full,
+		BorderType:  border.None,
 		BorderColor: &props.Color{Red: 255, Green: 255, Blue: 255},
 	}
 
 	rowStyle := &props.Cell{
+		BorderType:  border.None,
 		BorderColor: &props.Color{Red: 255, Green: 255, Blue: 255},
 	}
 
@@ -103,22 +100,6 @@ func main() {
 	m.AddRow(12.7,
 		text.NewCol(4, alpinistas[1029].Cidade, props.Text{Size: 14}).WithStyle(colStyle),
 	).WithStyle(rowStyle)
-
-	// for _, alpinista := range alpinistas {
-	// m.AddRow(12.7,
-	// 	text.NewCol(4, tresAlpinistas[0].Nome, props.Text{Size: 18, Top: 5}).WithStyle(colStyle),
-	// 	text.NewCol(4, tresAlpinistas[1].Nome, props.Text{Size: 18, Top: 5}).WithStyle(colStyle),
-	// 	text.NewCol(4, tresAlpinistas[2].Nome, props.Text{Size: 18, Top: 5}).WithStyle(colStyle),
-	// ).WithStyle(rowStyle)
-
-	// 	m.AddRow(12.7,
-	// 		text.NewCol(4, alpinista.Cidade, props.Text{Size: 14}).WithStyle(colStyle),
-	// 		text.NewCol(4, alpinista.Cidade, props.Text{Size: 14}).WithStyle(colStyle),
-	// 		text.NewCol(4, alpinista.Cidade, props.Text{Size: 14}).WithStyle(colStyle),
-	// 	).WithStyle(rowStyle)
-
-	// 	// fmt.Println(alpinista.Nome)
-	// }
 
 	document, err := m.Generate()
 	if err != nil {
