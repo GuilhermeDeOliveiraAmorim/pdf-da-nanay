@@ -4,6 +4,7 @@ import (
 	"log"
 	"sort"
 
+	"github.com/johnfercher/maroto/v2/pkg/components/image"
 	"github.com/johnfercher/maroto/v2/pkg/components/text"
 	"github.com/johnfercher/maroto/v2/pkg/consts/border"
 	"github.com/johnfercher/maroto/v2/pkg/consts/fontstyle"
@@ -34,13 +35,81 @@ func main() {
 	}
 
 	alpinistasPorCidade := make(map[string][]Alpinista)
-	
+
 	for _, alpinista := range alpinistas {
 		alpinistasPorCidade[alpinista.Cidade] = append(alpinistasPorCidade[alpinista.Cidade], alpinista)
 	}
-	
+
 	for cidade, alpinistas := range alpinistasPorCidade {
 		geraPdf(alpinistas, cidade)
+	}
+
+	geraQrCode("qr-code.jpeg")
+}
+
+func geraQrCode(imagePath string) {
+	customFont := "arial-unicode-ms"
+	customFontFile := "LondrinaSolid-Regular.ttf"
+
+	repository := config.NewRepository().
+		AddUTF8Font(customFont, fontstyle.Normal, customFontFile).
+		AddUTF8Font(customFont, fontstyle.Italic, customFontFile).
+		AddUTF8Font(customFont, fontstyle.Bold, customFontFile).
+		AddUTF8Font(customFont, fontstyle.BoldItalic, customFontFile)
+
+	builder, err := config.NewBuilder().TryLoadRepository(repository)
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+
+	cfg := builder.WithDefaultFont(&props.Font{Family: customFont}).
+		WithPageSize(pagesize.Nanay).
+		WithMargins(5, 9, 5).
+		WithDebug(false).
+		WithDimensions(215.9, 287.1).
+		Build()
+
+	mrt := pkg.NewMaroto(cfg)
+	m := pkg.NewMetricsDecorator(mrt)
+
+	colStyle := &props.Cell{
+		BorderType:  border.None,
+		BorderColor: &props.Color{Red: 255, Green: 255, Blue: 255},
+	}
+
+	rowStyle := &props.Cell{
+		BorderType:  border.None,
+		BorderColor: &props.Color{Red: 255, Green: 255, Blue: 255},
+	}
+
+	qrCode := image.NewFromFileCol(4, imagePath, props.Rect{
+		Percent: 100,
+		Top:     6,
+		Left:    29.2,
+	})
+
+	for i := 0; i < 10; i++ {
+		m.AddRow(12.7,
+			qrCode,
+			qrCode,
+			qrCode,
+		).WithStyle(rowStyle)
+
+		m.AddRow(12.7,
+			text.NewCol(4, "", props.Text{Size: 14}).WithStyle(colStyle),
+			text.NewCol(4, "", props.Text{Size: 14}).WithStyle(colStyle),
+			text.NewCol(4, "", props.Text{Size: 14}).WithStyle(colStyle),
+		).WithStyle(rowStyle)
+	}
+
+	document, err := m.Generate()
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+
+	err = document.Save("pdfs/qr-codes.pdf")
+	if err != nil {
+		log.Fatal(err.Error())
 	}
 }
 
@@ -82,7 +151,7 @@ func geraPdf(alpinistas []Alpinista, nomeCidade string) {
 	passo := 3
 
 	posicao := 0
-	
+
 	for posicao < len(alpinistas)-1 {
 		tresAlpinistas := []Alpinista{}
 
@@ -121,7 +190,7 @@ func geraPdf(alpinistas []Alpinista, nomeCidade string) {
 		log.Fatal(err.Error())
 	}
 
-	err = document.Save("etiquetas-anual-aju-2023-" + nomeCidade + ".pdf")
+	err = document.Save("pdfs/etiquetas-anual-aju-2023-" + nomeCidade + ".pdf")
 	if err != nil {
 		log.Fatal(err.Error())
 	}
