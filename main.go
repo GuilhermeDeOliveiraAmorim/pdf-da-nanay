@@ -1,8 +1,8 @@
 package main
 
 import (
-	"fmt"
 	"log"
+	"sort"
 
 	"github.com/johnfercher/maroto/v2/pkg/components/text"
 	"github.com/johnfercher/maroto/v2/pkg/consts/border"
@@ -20,6 +20,31 @@ type Alpinista struct {
 }
 
 func main() {
+	// Obtenha os dados da função getContents()
+	dados := ordenarPorCidade(getContents())
+
+	alpinistas := []Alpinista{}
+
+	for _, d := range dados {
+		pessoa := Alpinista{
+			Nome:   d[0],
+			Cidade: d[1],
+		}
+		alpinistas = append(alpinistas, pessoa)
+	}
+
+	alpinistasPorCidade := make(map[string][]Alpinista)
+	
+	for _, alpinista := range alpinistas {
+		alpinistasPorCidade[alpinista.Cidade] = append(alpinistasPorCidade[alpinista.Cidade], alpinista)
+	}
+	
+	for cidade, alpinistas := range alpinistasPorCidade {
+		geraPdf(alpinistas, cidade)
+	}
+}
+
+func geraPdf(alpinistas []Alpinista, nomeCidade string) {
 	customFont := "arial-unicode-ms"
 	customFontFile := "LondrinaSolid-Regular.ttf"
 
@@ -36,20 +61,10 @@ func main() {
 
 	cfg := builder.WithDefaultFont(&props.Font{Family: customFont}).
 		WithPageSize(pagesize.Nanay).
-		WithMargins(5, 13, 5).
+		WithMargins(5, 9, 5).
 		WithDebug(false).
 		WithDimensions(215.9, 287.1).
 		Build()
-
-	alpinistas := []Alpinista{}
-
-	for _, d := range getContents() {
-		pessoa := Alpinista{
-			Nome:   d[0],
-			Cidade: d[1],
-		}
-		alpinistas = append(alpinistas, pessoa)
-	}
 
 	mrt := pkg.NewMaroto(cfg)
 	m := pkg.NewMetricsDecorator(mrt)
@@ -67,49 +82,56 @@ func main() {
 	passo := 3
 
 	posicao := 0
-
-	tresAlpinistas := []Alpinista{}
-
+	
 	for posicao < len(alpinistas)-1 {
+		tresAlpinistas := []Alpinista{}
+
 		for i := 0; i < passo && posicao < len(alpinistas); i++ {
 			tresAlpinistas = append(tresAlpinistas, alpinistas[posicao])
 			posicao++
 		}
 
-		fmt.Println(tresAlpinistas)
+		if len(tresAlpinistas) == 3 {
+			m.AddRow(12.7,
+				text.NewCol(4, tresAlpinistas[0].Nome, props.Text{Size: 18, Top: 5}).WithStyle(colStyle),
+				text.NewCol(4, tresAlpinistas[1].Nome, props.Text{Size: 18, Top: 5}).WithStyle(colStyle),
+				text.NewCol(4, tresAlpinistas[2].Nome, props.Text{Size: 18, Top: 5}).WithStyle(colStyle),
+			).WithStyle(rowStyle)
 
-		m.AddRow(12.7,
-			text.NewCol(4, tresAlpinistas[0].Nome, props.Text{Size: 18, Top: 5}).WithStyle(colStyle),
-			text.NewCol(4, tresAlpinistas[1].Nome, props.Text{Size: 18, Top: 5}).WithStyle(colStyle),
-			text.NewCol(4, tresAlpinistas[2].Nome, props.Text{Size: 18, Top: 5}).WithStyle(colStyle),
-		).WithStyle(rowStyle)
-
-		m.AddRow(12.7,
-			text.NewCol(4, tresAlpinistas[0].Cidade, props.Text{Size: 14}).WithStyle(colStyle),
-			text.NewCol(4, tresAlpinistas[1].Cidade, props.Text{Size: 14}).WithStyle(colStyle),
-			text.NewCol(4, tresAlpinistas[2].Cidade, props.Text{Size: 14}).WithStyle(colStyle),
-		).WithStyle(rowStyle)
-
-		tresAlpinistas = []Alpinista{}
+			m.AddRow(12.7,
+				text.NewCol(4, tresAlpinistas[0].Cidade, props.Text{Size: 14}).WithStyle(colStyle),
+				text.NewCol(4, tresAlpinistas[1].Cidade, props.Text{Size: 14}).WithStyle(colStyle),
+				text.NewCol(4, tresAlpinistas[2].Cidade, props.Text{Size: 14}).WithStyle(colStyle),
+			).WithStyle(rowStyle)
+		} else {
+			// Lida com o caso onde o grupo não tem 3 alpinistas
+			for _, alpinista := range tresAlpinistas {
+				m.AddRow(12.7,
+					text.NewCol(4, alpinista.Nome, props.Text{Size: 18, Top: 5}).WithStyle(colStyle),
+				).WithStyle(rowStyle)
+				m.AddRow(12.7,
+					text.NewCol(4, alpinista.Cidade, props.Text{Size: 14}).WithStyle(colStyle),
+				).WithStyle(rowStyle)
+			}
+		}
 	}
-
-	m.AddRow(12.7,
-		text.NewCol(4, alpinistas[1029].Nome, props.Text{Size: 18, Top: 5}).WithStyle(colStyle),
-	).WithStyle(rowStyle)
-
-	m.AddRow(12.7,
-		text.NewCol(4, alpinistas[1029].Cidade, props.Text{Size: 14}).WithStyle(colStyle),
-	).WithStyle(rowStyle)
 
 	document, err := m.Generate()
 	if err != nil {
 		log.Fatal(err.Error())
 	}
 
-	err = document.Save("etiquetas-anual-aju-2023.pdf")
+	err = document.Save("etiquetas-anual-aju-2023-" + nomeCidade + ".pdf")
 	if err != nil {
 		log.Fatal(err.Error())
 	}
+}
+
+func ordenarPorCidade(dados [][]string) [][]string {
+	sort.SliceStable(dados, func(i, j int) bool {
+		return dados[i][1] < dados[j][1]
+	})
+	return dados
 }
 
 func getContents() [][]string {
@@ -599,7 +621,7 @@ func getContents() [][]string {
 		{"Nati", "Jacobina"},
 		{"Cunha", "Jacobina"},
 		{"Mila", "Jacobina"},
-		{"Mi", "Jacobina"},
+		{"Peu Chará", "Jacobina"},
 		{"Laranjeira", "Jacobina"},
 		{"Blu", "Jacobina"},
 		{"Gonzaga", "Itabuna"},
@@ -689,7 +711,7 @@ func getContents() [][]string {
 		{"Bino", "Cruz das Almas"},
 		{"Karlinha Dani", "Aracaju"},
 		{"Nick", "Jequié"},
-		{"Bruno", "Jequié"},
+		{"Thunder", "Jequié"},
 		{"Cananda", "Cruz das Almas"},
 		{"Ludi", "Itabuna"},
 		{"Nanda", "Itabuna"},
@@ -1144,5 +1166,7 @@ func getContents() [][]string {
 		{"Vic Coelho", "Petrolina"},
 		{"Hen", "Petrolina"},
 		{"Guigui", "Aracaju"},
+		{"Luiz Pradex", "Aracaju"},
+		{"Gabi", "Aracaju"},
 	}
 }
