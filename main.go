@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"sort"
 
@@ -114,6 +115,10 @@ func geraQrCode(imagePath string) {
 }
 
 func geraPdf(alpinistas []Alpinista, nomeCidade string) {
+	fmt.Println(nomeCidade)
+	// fmt.Println(alpinistas)
+	// fmt.Println()
+
 	customFont := "arial-unicode-ms"
 	customFontFile := "LondrinaSolid-Regular.ttf"
 
@@ -159,6 +164,13 @@ func geraPdf(alpinistas []Alpinista, nomeCidade string) {
 			tresAlpinistas = append(tresAlpinistas, alpinistas[posicao])
 			posicao++
 		}
+
+		// if nomeCidade == "Itabuna" {
+		// }
+		
+		fmt.Println(tresAlpinistas,len(tresAlpinistas))
+
+		fmt.Println()
 
 		if len(tresAlpinistas) == 3 {
 			m.AddRow(12.7,
@@ -278,7 +290,7 @@ func getContents() [][]string {
 		{"Duda Fonseca", "Cruz das Almas"},
 		{"Paulinha", "Juazeiro"},
 		{"Livinha", "Canavieiras"},
-		{"FÁ", "Una"},
+		{"Fá", "Una"},
 		{"Bia Rocha", "Canavieiras"},
 		{"Tia Rita", "Canavieiras"},
 		{"Sambras", "Canavieiras"},
@@ -448,7 +460,6 @@ func getContents() [][]string {
 		{"Thays", "Petrolina"},
 		{"Mateus", "Petrolina"},
 		{"Ceará", "Petrolina"},
-		{"Kamille", "Petrolina"},
 		{"Babi", "Petrolina"},
 		{"Carol", "Petrolina"},
 		{"Lore", "Petrolina"},
@@ -470,7 +481,7 @@ func getContents() [][]string {
 		{"Thata", "Petrolina"},
 		{"Ferraz", "Petrolina"},
 		{"Biel Castro", "Petrolina"},
-		{"Lari", "Salvador"},
+		{"Mari", "Salvador"},
 		{"Tina", "Aracaju"},
 		{"Alice", "Petrolina"},
 		{"Lu Mitsuyo", "Petrolina"},
@@ -515,7 +526,7 @@ func getContents() [][]string {
 		{"Mi", "Petrolina"},
 		{"Adson", "Petrolina"},
 		{"Lua", "Canavieiras"},
-		{"Corujinha", "Petrolina"},
+		{"França", "Petrolina"},
 		{"Thai", "Cruz das Almas"},
 		{"Beca", "Petrolina"},
 		{"Paula Nogueira", "Petrolina"},
@@ -543,7 +554,7 @@ func getContents() [][]string {
 		{"Sté", "Salvador"},
 		{"Amanda Soares", "Petrolina"},
 		{"Jacque", "Lauro de Freitas"},
-		{"Luan", "Petrolina"},
+		{"Tia Lu", "Petrolina"},
 		{"Gabi", "Lauro de Freitas"},
 		{"Nana", "Aracaju"},
 		{"Vivi", "Lauro de Freitas"},
@@ -587,7 +598,7 @@ func getContents() [][]string {
 		{"Juju", "Lauro de Freitas"},
 		{"Johannes", "Petrolina"},
 		{"Mari Muniz", "Lauro de Freitas"},
-		{"Biel simoes", "Petrolina"},
+		{"Biel Simões", "Petrolina"},
 		{"Dudinha", "Lauro de Freitas"},
 		{"Samarinha", "Petrolina"},
 		{"Cauã", "Lauro de Freitas"},
@@ -816,7 +827,7 @@ func getContents() [][]string {
 		{"Jana", "Juazeiro"},
 		{"Lucigol", "Jequié"},
 		{"Isa Melo", "Aracaju"},
-		{"lalá", "Canavieiras"},
+		{"Lalá", "Canavieiras"},
 		{"El Potro", "Juazeiro"},
 		{"Tililinho", "Cruz das Almas"},
 		{"Lelê", "Canavieiras"},
@@ -839,7 +850,7 @@ func getContents() [][]string {
 		{"Karol", "Canavieiras"},
 		{"Mile Lessa", "Cruz das Almas"},
 		{"Caioh", "Conceição do Almeida"},
-		{"Victor Oasis", "Aracaju"},
+		{"Victor Oásis", "Aracaju"},
 		{"Sther", "Conceição do Almeida"},
 		{"Meizã", "Conceição do Almeida"},
 		{"Jú", "Itabuna"},
@@ -973,6 +984,7 @@ func getContents() [][]string {
 		{"Gih", "Petrolina"},
 		{"Mari", "Petrolina"},
 		{"Biel", "Lauro de Freitas"},
+		{"Pipoca", "Lauro de Freitas"},
 		{"Dudinha", "Aracaju"},
 		{"Ariel", "Aracaju"},
 		{"Tia Helô", "Aracaju"},
@@ -1074,7 +1086,7 @@ func getContents() [][]string {
 		{"Livinha", "Ilhéus"},
 		{"Liz", "Ilhéus"},
 		{"Ló", "Ilhéus"},
-		{"Felippe (Luizão)", "Ilhéus"},
+		{"Felippe", "Ilhéus"},
 		{"Marcus", "Ilhéus"},
 		{"Meuri", "Ilhéus"},
 		{"Loli", "Ilhéus"},
@@ -1173,7 +1185,9 @@ func getContents() [][]string {
 		{"Mago", "Aracaju"},
 		{"Bella", "Aracaju"},
 		{"Yara", "Aracaju"},
-		{"AJ", "Cruz das Almas"},
+		{"Lipe", "Cruz das Almas"},
+		{"Cacau", "Cruz das Almas"},
+		{"Luz", "Cruz das Almas"},
 		{"Dani P.", "Salvador"},
 		{"MC", "Salvador"},
 		{"Tia Juca", "Conceição do Almeida"},
@@ -1198,10 +1212,8 @@ func getContents() [][]string {
 		{"Kaio", "Salvador"},
 		{"Gaby", "Salvador"},
 		{"Paty", "Salvador"},
-		{"Lipe", "Cruz das Almas"},
 		{"Jiji", "Salvador"},
-		{"Cacau", "Cruz das Almas"},
-		{"Lari", "Salvador"},
+		{"Mari", "Salvador"},
 		{"Mai", "Salvador"},
 		{"Laurinha", "Salvador"},
 		{"Amandinha C", "Salvador"},
@@ -1228,6 +1240,7 @@ func getContents() [][]string {
 		{"Galega", "Itabuna"},
 		{"Paulinha", "Itabuna"},
 		{"Xande", "Itabuna"},
+		{"Etiqueta Teste", "Itabuna"},
 		{"Luana", "Petrolina"},
 		{"Tchuy", "Conceição do Almeida"},
 		{"Nat Pedral", "Aracaju"},
@@ -1237,5 +1250,9 @@ func getContents() [][]string {
 		{"Guigui", "Aracaju"},
 		{"Luiz Pradex", "Aracaju"},
 		{"Gabi", "Aracaju"},
+		{"Thatá", "Aracaju"},
+		{"Tio Zezinho", "Aracaju"},
+		{"Claudia", "Aracaju"},
+		{"Halisson", "Petrolina"},
 	}
 }
